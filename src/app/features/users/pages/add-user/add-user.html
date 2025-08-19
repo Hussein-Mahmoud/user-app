@@ -1,0 +1,31 @@
+<p-card class="m-6">
+  <div class="flex justify-between pb-0">
+    <h1 class="text-2xl font-bold">Create New User</h1>
+    <p-button label="Back" [routerLink]="'/users'" />
+  </div>
+  <form [formGroup]="store.userToAddEdit()" (ngSubmit)="createUser()" class="flex flex-col gap-3">
+    <div class="flex flex-col gap-2">
+      <label for="firstName">First Name</label>
+      <input pInputText id="firstName" formControlName="first_name" />
+    </div>
+
+    <div class="flex flex-col gap-2">
+      <label for="lastName">Last Name</label>
+      <input pInputText id="lastName" formControlName="last_name" />
+    </div>
+
+    <div class="flex flex-col gap-2">
+      <label for="email">Email</label>
+      <input pInputText id="email" formControlName="email" type="email" />
+    </div>
+
+    <button
+      pButton
+      type="submit"
+      label="Create User"
+      [disabled]="store.userToAddEdit().invalid"
+    ></button>
+  </form>
+</p-card>
+
+<p-toast/>

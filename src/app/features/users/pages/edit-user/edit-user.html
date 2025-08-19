@@ -1,0 +1,37 @@
+<p-card class="m-6">
+
+  <div class="flex justify-between pb-0">
+    <h1 class="text-2xl font-bold">Edit User {{userId()}}</h1>
+    <p-button label="Back" [routerLink]="'/users'" />
+  </div>
+  @if(store.loadingDetails()) {
+    <div class="flex justify-center items-center h-full">
+      <p-progress-spinner strokeWidth="8" fill="transparent" animationDuration=".5s" [style]="{ width: '50px', height: '50px' }" />
+    </div>
+  } @else {
+  <form [formGroup]="store.userToAddEdit()" (ngSubmit)="editUser()" class="flex flex-col gap-3">
+    <div class="flex flex-col gap-2">
+      <label for="firstName">First Name</label>
+      <input pInputText id="firstName" formControlName="first_name" />
+    </div>
+
+    <div class="flex flex-col gap-2">
+      <label for="lastName">Last Name</label>
+      <input pInputText id="lastName" formControlName="last_name" />
+    </div>
+
+    <div class="flex flex-col gap-2">
+      <label for="email">Email</label>
+      <input pInputText id="email" formControlName="email" type="email" />
+    </div>
+
+    <button
+      pButton
+      type="submit"
+      label="Save Changes"
+      [disabled]="store.userToAddEdit().invalid"
+    ></button>
+  </form>
+}
+
+</p-card>
