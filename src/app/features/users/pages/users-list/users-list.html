@@ -37,7 +37,7 @@
           </td>
           <td>{{ user.first_name }} {{ user.last_name }}</td>
           <td>{{ user.email }}</td>
-          <td class="flex justify-center items-center gap-2">
+          <td>
             <button class="mx-2" pButton icon="pi pi-eye" [severity]="'secondary'" (click)="goDetails(user.id)"></button>
             <button class="mx-2" pButton icon="pi pi-pencil" [severity]="'warn'" (click)="goEdit(user.id)"></button>
             <button class="mx-2" pButton icon="pi pi-trash" [severity]="'danger'" (click)="store.deleteUser(user.id)" [disabled]="store.loading()" [loading]="store.loading()"></button>
@@ -56,3 +56,5 @@
     }
   </div>
 </p-card>
+
+<!-- Toast moved to UsersLayoutsComponent to ensure a single shared MessageService instance and persistent host -->

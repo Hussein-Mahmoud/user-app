@@ -5,7 +5,6 @@ import { UserService } from '../../../core/services/user.service';
 import { User, UserResponse } from '../../../core/interfaces/user';
 import { catchError, finalize, of, switchMap, tap } from 'rxjs';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
-import { MessageService } from 'primeng/api';
 import { Router } from '@angular/router';
 
 type AddEditUserFormModel = {
@@ -21,7 +20,8 @@ type UsersState = {
   loadingDetails: boolean;
   userDetails: User | null;
   error: string | null;
-  userCreatedSuccess: boolean;
+  showSuccessCreate: boolean;
+  showSuccessEdit: boolean;
   userToAddEdit: FormGroup<AddEditUserFormModel>;
 };
 const initialUsersState: UsersState = {
@@ -36,7 +36,8 @@ const initialUsersState: UsersState = {
   loadingDetails: false,
   userDetails: null,
   error: null,
-  userCreatedSuccess: false,
+  showSuccessCreate: false,
+  showSuccessEdit: false,
   userToAddEdit: new FormGroup<AddEditUserFormModel>({
     first_name: new FormControl('', { nonNullable: true, validators: [Validators.required] }),
     last_name: new FormControl('', { nonNullable: true, validators: [Validators.required] }),
@@ -51,7 +52,6 @@ export const UsersStore = signalStore(
   withState<UsersState>(initialUsersState),
   withMethods((store,
      userService = inject(UserService) ,
-    messageService = inject(MessageService) ,
     router = inject(Router)) => {
     const getUsers = rxMethod<{ page: number; per_page: number }>((pipe) =>
       pipe.pipe(
@@ -184,6 +184,7 @@ export const UsersStore = signalStore(
       pipe.pipe(
         tap(() => {
           patchState(store, {
+            showSuccessCreate: false,
             loading: true,
           });
         }),
@@ -197,13 +198,12 @@ export const UsersStore = signalStore(
             tap((res) => {
               if (res) {
                 patchState(store, {
-                  userCreatedSuccess: true,
+                  showSuccessCreate: true,
                   users:{
                     ...store.users(),
                     data: [ res as User ,...store.users().data],
                   }
                 });
-                messageService.add({ severity: 'success', summary: 'Success', detail: 'User created successfully', life: 2000 });
                 router.navigate(['/users']);
               }
             }),
@@ -222,6 +222,7 @@ export const UsersStore = signalStore(
       pipe.pipe(
         tap(() => {
           patchState(store, {
+            showSuccessEdit: false,
             loading: true,
           });
         }),
@@ -234,8 +235,10 @@ export const UsersStore = signalStore(
             }),
             tap((res) => {
               if (res) {
+                patchState(store, {
+                  showSuccessEdit: true,
+                });
                 getUsers({ page: store.users().page, per_page: store.users().per_page });
-                messageService.add({ severity: 'success', summary: 'Success', detail: 'User created successfully', life: 2000 });
                 router.navigate(['/users']);
               }
             }),
@@ -267,6 +270,13 @@ export const UsersStore = signalStore(
       });
     };
 
+    const clearSuccessFlags = () => {
+      patchState(store, {
+        showSuccessCreate: false,
+        showSuccessEdit: false,
+      });
+    };
+
     return {
       getUsers,
       getUserDetails,
@@ -276,6 +286,7 @@ export const UsersStore = signalStore(
       getUserDetailsForEdit,
       resetStore,
       resetuserToAddEdit,
+      clearSuccessFlags,
     };
   }),
   withHooks({
