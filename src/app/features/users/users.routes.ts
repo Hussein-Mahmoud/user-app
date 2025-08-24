@@ -16,10 +16,10 @@ export const UsersRoutes: Routes = [
       },
       {
         path: 'add',
-        loadComponent: () => import('./pages/add-user/add-user').then((m) => m.AddUser),
+        loadComponent: () => import('./pages/edit-user/edit-user').then((m) => m.EditUser),
       },
       {
-        path: 'edit/:id',
+        path: 'edit/:userId',
         loadComponent: () => import('./pages/edit-user/edit-user').then((m) => m.EditUser),
       },
     ],

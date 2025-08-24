@@ -123,7 +123,7 @@ export const UsersStore = signalStore(
           });
         }),
         switchMap((id: number) =>
-          of(store.users().data.find((u) => u.id === id) ?? null).pipe(
+          of(store.users().data.find((u) => u.id == id) ?? null).pipe(
             finalize(() => {
               patchState(store, {
                 loadingDetails: false,

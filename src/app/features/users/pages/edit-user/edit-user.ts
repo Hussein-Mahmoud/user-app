@@ -1,4 +1,4 @@
-import { Component, inject, signal } from '@angular/core';
+import { Component, inject, input, signal } from '@angular/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { ButtonModule } from 'primeng/button';
 import { CardModule } from 'primeng/card';
@@ -18,15 +18,23 @@ import { ProgressSpinnerModule } from 'primeng/progressspinner';
 export class EditUser {
   store = inject(UsersStore);
   route = inject(ActivatedRoute);
-  userId = signal<number>(0);
+  userId = input<number>();
   ngOnInit(): void {
-    this.userId.set(Number(this.route.snapshot.params['id']));
-    this.store.getUserDetailsForEdit(this.userId());
+    const userId = this.userId();
+    if (userId !== undefined) {
+      this.store.getUserDetailsForEdit(userId);
+    } else {
+      this.store.resetuserToAddEdit();
+    }
   }
 
   editUser() {
     const { first_name, last_name, email } = this.store.userToAddEdit().getRawValue();
     const payload: Partial<User> = { first_name, last_name, email };
-    this.store.updateUser({ id: this.userId(), user: payload });
+    if (this.userId()) {
+      this.store.updateUser({ id: this.userId()!, user: payload });
+    } else {
+      this.store.createUser(payload);
+    }
   }
 }

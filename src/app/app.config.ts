@@ -1,5 +1,5 @@
 import { ApplicationConfig, provideBrowserGlobalErrorListeners, provideZoneChangeDetection } from '@angular/core';
-import { provideRouter } from '@angular/router';
+import { provideRouter, withComponentInputBinding } from '@angular/router';
 import { provideHttpClient, HTTP_INTERCEPTORS, withInterceptorsFromDi } from '@angular/common/http';
 
 import { routes } from './app.routes';
@@ -19,8 +19,8 @@ export const appConfig: ApplicationConfig = {
     }),
     provideBrowserGlobalErrorListeners(),
     provideZoneChangeDetection({ eventCoalescing: true }),
-    provideRouter(routes), provideClientHydration(withEventReplay()),
-    { provide: HTTP_INTERCEPTORS, useClass: ErrorInterceptor, multi: true },
+    provideRouter(routes, withComponentInputBinding()), provideClientHydration(withEventReplay()),
+    { provide: HTTP_INTERCEPTORS, useClass: ErrorInterceptor, multi: true ,},
     provideHttpClient(withInterceptorsFromDi())
   ]
 };
